@@ -1,5 +1,6 @@
 'use strict'
 
+ 
 const path = require('node:path')
 const AutoLoad = require('@fastify/autoload')
 
@@ -7,6 +8,7 @@ const AutoLoad = require('@fastify/autoload')
 const options = {}
 
 module.exports = async function (fastify, opts) {
+  
   // Place here your custom code!
 
   // Do not touch the following lines
@@ -25,6 +27,13 @@ module.exports = async function (fastify, opts) {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({}, opts)
   })
+
+
+ 
+
+  
 }
+
+
 
 module.exports.options = options
