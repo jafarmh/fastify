@@ -1,5 +1,6 @@
+const Joi = require('joi');
 'use strict'
- 
+
 module.exports = async function (fastify, opts) {
   fastify.addSchema({ $id: 'one', my: 'hello' })
 
@@ -10,6 +11,7 @@ module.exports = async function (fastify, opts) {
 
  
  
+
   const options = {
     schema: {
       querystring: {
@@ -17,7 +19,7 @@ module.exports = async function (fastify, opts) {
         properties: {
           mobile: {
             type: 'string',
-
+         
           },
         },
         required: ['mobile']
@@ -25,7 +27,7 @@ module.exports = async function (fastify, opts) {
     }
   }
 
-  fastify.get('/valid', options, (request, reply) => {
+  fastify.get('/valid', options , (request, reply) => {
     request.raw.on('close', () => {
       if (request.raw.aborted) {
         app.log.info('request closed')
