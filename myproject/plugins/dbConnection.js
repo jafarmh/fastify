@@ -9,7 +9,7 @@ const fastifyPlugin = require('fastify-plugin')
  */
 async function dbConnector (fastify, options) {
     fastify.register(require('@fastify/mysql'), {
-        connectionString: 'mysql://root@localhost/fastify ',
+        connectionString: process.env["DATABASE_URL"],
       })
   
 }

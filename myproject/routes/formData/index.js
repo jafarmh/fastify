@@ -1,6 +1,5 @@
 const Joi = require('joi')
-const yup = require('yup')
-const fs = require('fs')
+
 const pump = require('pump')
 const sharp = require('sharp');
 

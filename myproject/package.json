@@ -19,6 +19,8 @@
     "@fastify/multipart": "^8.1.0",
     "@fastify/mysql": "^4.2.0",
     "@fastify/sensible": "^5.0.0",
+    "@joggr/fastify-prisma": "^1.2.3",
+    "@prisma/client": "^5.11.0",
     "fast-json-body": "^1.1.0",
     "fastify": "^4.26.1",
     "fastify-cli": "^6.1.1",
@@ -26,5 +28,8 @@
     "joi": "^17.12.2",
     "sharp": "^0.33.3",
     "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.11.0"
   }
 }
