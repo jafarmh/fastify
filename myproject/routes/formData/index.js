@@ -1,6 +1,9 @@
 const Joi = require('joi')
+const yup = require('yup')
 const fs = require('fs')
 const pump = require('pump')
+const sharp = require('sharp');
+
 module.exports = async function (fastify, opts) {
   fastify.register(require('@fastify/multipart'), {
     attachFieldsToBody: 'keyValues',
@@ -8,72 +11,19 @@ module.exports = async function (fastify, opts) {
       fieldNameSize: 100, // Max field name size in bytes
       fieldSize: 100,     // Max field value size in bytes
       fields: 10,         // Max number of non-file fields
-      fileSize: 1000000,  // For multipart forms, the max file size in bytes
+      fileSize: 10000000,  // For multipart forms, the max file size in bytes
       files: 1,           // Max number of file fields
       headerPairs: 2000,  // Max number of header key=>value pairs
       parts: 1000         // For multipart forms, the max number of parts (fields + files)
     }
   })
 
-  const bodyJsonSchema = {
-    type: 'object',
-    required: ['requiredKey'],
-    properties: {
-      someKey: { type: 'string' },
-      someOtherKey: { type: 'number' },
-      requiredKey: {
-        type: 'array',
-        maxItems: 3,
-        items: { type: 'integer' }
-      },
-      nullableKey: { type: ['number', 'null'] }, // or { type: 'number', nullable: true }
-      multipleTypesKey: { type: ['boolean', 'number'] },
-      multipleRestrictedTypesKey: {
-        oneOf: [
-          { type: 'string', maxLength: 5 },
-          { type: 'number', minimum: 10 }
-        ]
-      },
-      enumKey: {
-        type: 'string',
-        enum: ['John', 'Foo']
-      },
-      notTypeKey: {
-        not: { type: 'array' }
-      }
-    }
-  }
-
-  const queryStringJsonSchema = {
-    type: 'object',
-    properties: {
-      name: { type: 'string' },
-      excitement: { type: 'integer' }
-    },
-    required: ["name", "excitement"]
-  }
-
-  const paramsJsonSchema = {
-    type: 'object',
-    properties: {
-      par1: { type: 'string' },
-      par2: { type: 'number' }
-    }
-  }
-
-  const headersJsonSchema = {
-    type: 'object',
-    properties: {
-      'x-foo': { type: 'string' }
-    },
-    required: ['x-foo']
-  }
-
-
+ 
   const schema = {
+
     body: Joi.object().keys({
       mobile: Joi.number().required(),
-      img: Joi.binary()
+      img: Joi.binary().required()
     })
     ,
     //querystring: queryStringJsonSchema,
@@ -88,10 +38,15 @@ module.exports = async function (fastify, opts) {
   }, async (req, reply) => {
 
     let file=Buffer.from(req.body.img)  ;
-    console.log(file.mimetype);
-    const storedFile = fs.createWriteStream('./img-uploaded.png')
-   // let upload= await pump(file, storedFile)
-
+    sharp(file)
+    .resize(320, 240)
+    .toFile('uploads/output.jpg', (err, info,data ) => { 
+     // fs.createWriteStream(`uploads/${data}`)
+ 
+     });
+     
+    //const storedFile = fs.createWriteStream('./img-uploaded')
+ 
     reply.send({ params: { mobile: req.body.mobile } }) // echo the querystring
   })
 

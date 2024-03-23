@@ -48,18 +48,13 @@ module.exports = async function (fastify, opts) {
   
     return res
   })
-  
-  // Handle all content types that matches RegExp
-  fastify.addContentTypeParser(/^image\/.*/, function (request, payload, done) {
-    imageParser(payload, function (err, body) {
-      done(err, body)
-    })
-  })
+ 
   
   // Can use default JSON/Text parser for different content Types
   fastify.addContentTypeParser('text/json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'))
   
   fastify.addContentTypeParser('application/x-www-form-urlencoded', function (request, payload, done) {
+ 
     let body = ''
     payload.on('data', function (data) {
       body += data
