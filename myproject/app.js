@@ -3,6 +3,8 @@
  
 const path = require('node:path')
 const AutoLoad = require('@fastify/autoload')
+const jsonParser = require('fast-json-body')
+const querystring = require('node:querystring')
 
 // Pass --options via CLI arguments in command to enable these options.
 const options = {}
@@ -30,9 +32,50 @@ module.exports = async function (fastify, opts) {
 
 
 
- 
+
 
   
+  // Handle multiple content types with the same function
+  fastify.addContentTypeParser(['text/xml', 'application/xml'], function (request, payload, done) {
+    xmlParser(payload, function (err, body) {
+      done(err, body)
+    })
+  })
+  
+  // Async is also supported in Node versions >= 8.0.0
+  fastify.addContentTypeParser('application/jsoff', async function (request, payload) {
+    var res = await jsoffParserAsync(payload)
+  
+    return res
+  })
+  
+  // Handle all content types that matches RegExp
+  fastify.addContentTypeParser(/^image\/.*/, function (request, payload, done) {
+    imageParser(payload, function (err, body) {
+      done(err, body)
+    })
+  })
+  
+  // Can use default JSON/Text parser for different content Types
+  fastify.addContentTypeParser('text/json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'))
+  
+  fastify.addContentTypeParser('application/x-www-form-urlencoded', function (request, payload, done) {
+    let body = ''
+    payload.on('data', function (data) {
+      body += data
+    })
+    payload.on('end', function () {
+      try {
+        const parsed = querystring.parse(body)
+        done(null, parsed)
+      } catch (e) {
+        done(e)
+      }
+    })
+    payload.on('error', done)
+  })
+ 
+
 }
 
 

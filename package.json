@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@fastify/mysql": "^4.2.0"
-  }
-}
